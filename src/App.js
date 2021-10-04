@@ -162,6 +162,7 @@ class App extends React.Component {
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal
+                    currentList={this.state.currentList}
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                 />
             </div>
