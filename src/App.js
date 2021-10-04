@@ -124,11 +124,12 @@ class App extends React.Component {
             // ANY AFTER EFFECTS?
         });
     }
-    deleteList = () => {
+    deleteList = (keyNamePair) => {
         // SOMEHOW YOU ARE GOING TO HAVE TO FIGURE OUT
         // WHICH LIST IT IS THAT THE USER WANTS TO
         // DELETE AND MAKE THAT CONNECTION SO THAT THE
         // NAME PROPERLY DISPLAYS INSIDE THE MODAL
+        this.loadList(keyNamePair.key);
         this.showDeleteListModal();
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
