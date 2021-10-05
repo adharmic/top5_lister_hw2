@@ -15,6 +15,7 @@ export default class ListItem extends React.Component {
                 index: -1,
                 text: "",
                 editActive: false,
+                canDrop: false
             }
         }
     }
@@ -38,7 +39,6 @@ export default class ListItem extends React.Component {
 
     handleBlur = () => {
         let textValue = this.state.text;
-        console.log("ListItem handleBlur: " + textValue);
         if(this.props.list) {
             this.props.editListItemCallback(this.props.list.key, this.props.index, textValue);
         }
@@ -50,6 +50,30 @@ export default class ListItem extends React.Component {
         this.setState({
             editActive: !this.state.editActive
         });
+    }
+
+    onDragOver = (ev) => {
+        ev.preventDefault();
+        this.setState({canDrop: true});
+    }
+
+    onDragStart = (ev, startIndex) => {
+        ev.dataTransfer.setData("startIndex", startIndex);
+    }
+
+    onDragExit = (ev) => {
+        ev.preventDefault();
+        this.setState({canDrop: false});
+    }
+
+    onDrop = (ev, endIndex) => {
+        ev.preventDefault();
+        this.setState({canDrop: false});
+        let startIndex = ev.dataTransfer.getData("startIndex");
+        let startNum = parseInt(startIndex);
+        if (endIndex !== startNum) {
+            this.props.shiftListCallback(this.props.list.key, startNum, endIndex);
+        }
     }
 
     render() {
@@ -71,9 +95,28 @@ export default class ListItem extends React.Component {
                     defaultValue={name}
                 />)
         }
+        else if (this.state.canDrop) {
+            return (
+                <div onClick={this.handleClick}
+                draggable={true}
+                onDrop={(e) => this.onDrop(e, index)}
+                onDragExit={(e) => this.onDragExit(e)}
+                onDragStart={(e) => this.onDragStart(e, index)}
+                onDragOver={(e) => this.onDragOver(e)} 
+                className="top5-item-dragged-to">
+                    {name}
+                </div>
+            )
+        }
         else {
             return (
-                <div onClick={this.handleClick} className="top5-item">
+                <div onClick={this.handleClick}
+                draggable={true}
+                onDrop={(e) => this.onDrop(e, index)}
+                onDragExit={(e) => this.onDragExit(e)}
+                onDragStart={(e) => this.onDragStart(e, index)}
+                onDragOver={(e) => this.onDragOver(e)} 
+                className="top5-item">
                     {name}
                 </div>
             )

@@ -98,20 +98,50 @@ class App extends React.Component {
         this.hideDeleteListModal();
     }
 
-    editListItem = (key, index, newText) => {
-        // let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
-        // let pair = null;
-        // for (let i = 0; i < newKeyNamePairs.length; i++) {
-        //     pair = newKeyNamePairs[i];
-        //     if (pair.key === key) {
-        //         break;
-        //     }
-        // }
-        
-        let currentList = this.state.currentList;
-        if (currentList.key === key) {
-            currentList.items[index] = newText;
+
+    shiftList = (key, startIndex, endIndex) => {
+        if(startIndex === endIndex) {
+            return;
         }
+        let currentList = this.state.currentList;
+        let toChange = this.db.queryGetList(key);
+        let text = toChange.items[startIndex]; 
+        //startindex = 0, delta
+        //endindex = 3, alpha
+        if(startIndex > endIndex) {
+            for (let index = startIndex; index > endIndex; index--) {
+                currentList.items[index] = currentList.items[index-1];
+                toChange.items[index] = toChange.items[index-1];
+            }
+        }
+        else {
+            for (let index = startIndex; index < endIndex; index++) {
+                console.log(currentList.items[index+1]);
+                currentList.items[index] = currentList.items[index+1];
+                toChange.items[index] = toChange.items[index+1];
+            }
+        }
+        currentList.items[endIndex] = text;
+        toChange.items[endIndex] = text;
+
+        this.setState(prevState => ({
+            currentList: currentList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: prevState.sessionData.keyNamePairs
+            }
+        }), () => {
+            // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
+            // THE TRANSACTION STACK IS CLEARED
+            this.db.mutationUpdateList(toChange);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+        });
+    }
+
+    editListItem = (key, index, newText) => {
+        let currentList = this.state.currentList;
+        currentList.items[index] = newText;
 
         let toChange = this.db.queryGetList(key);
         toChange.items[index] = newText;
@@ -209,7 +239,8 @@ class App extends React.Component {
                 />
                 <Workspace
                     currentList={this.state.currentList} 
-                    editListItemCallback={this.editListItem}/>
+                    editListItemCallback={this.editListItem}
+                    shiftListCallback={this.shiftList}/>
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal
