@@ -3,10 +3,19 @@ import React from "react"
 export default class ListItem extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            text: "",
-            editActive: false,
+        if(this.props.list) {
+            this.state = {
+                index: this.props.index,
+                text: this.props.list.items[this.props.index],
+                editActive: false,
+            }
+        }
+        else {
+            this.state = {
+                index: -1,
+                text: "",
+                editActive: false,
+            }
         }
     }
 
@@ -29,8 +38,10 @@ export default class ListItem extends React.Component {
 
     handleBlur = () => {
         let textValue = this.state.text;
-        console.log("ListCard handleBlur: " + textValue);
-        // this.props.renameListCallback(key, textValue);
+        console.log("ListItem handleBlur: " + textValue);
+        if(this.props.list) {
+            this.props.editListItemCallback(this.props.list.key, this.props.index, textValue);
+        }
         this.handleToggleEdit();
     }
 
@@ -50,9 +61,9 @@ export default class ListItem extends React.Component {
         if (this.state.editActive) {
             return (
                 <input
-                    autoFocus="true"
+                    autoFocus={true}
                     id={"item-" + name}
-                    className='top5-item'
+                    className='top5-item-edit'
                     type='text'
                     onKeyPress={this.handleKeyPress}
                     onBlur={this.handleBlur}

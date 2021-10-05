@@ -14,11 +14,11 @@ export default class Workspace extends React.Component {
                         <div className="item-number">5.</div>
                     </div>
                     <div id="edit-items">
-                        <ListItem list={this.props.currentList} index={0} />
-                        <ListItem list={this.props.currentList} index={1} />
-                        <ListItem list={this.props.currentList} index={2} />
-                        <ListItem list={this.props.currentList} index={3} />
-                        <ListItem list={this.props.currentList} index={4} />
+                        <ListItem list={this.props.currentList} index={0} editListItemCallback={this.props.editListItemCallback}/>
+                        <ListItem list={this.props.currentList} index={1} editListItemCallback={this.props.editListItemCallback}/>
+                        <ListItem list={this.props.currentList} index={2} editListItemCallback={this.props.editListItemCallback}/>
+                        <ListItem list={this.props.currentList} index={3} editListItemCallback={this.props.editListItemCallback}/>
+                        <ListItem list={this.props.currentList} index={4} editListItemCallback={this.props.editListItemCallback}/>
                     </div>
                 </div>
             </div>

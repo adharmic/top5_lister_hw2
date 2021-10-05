@@ -33,6 +33,8 @@ class App extends React.Component {
             return keyPair1.name.localeCompare(keyPair2.name);
         });
     }
+
+
     // THIS FUNCTION BEGINS THE PROCESS OF CREATING A NEW LIST
     createNewList = () => {
         // FIRST FIGURE OUT WHAT THE NEW LIST'S KEY AND NAME WILL BE
@@ -74,8 +76,6 @@ class App extends React.Component {
     
 
     removeList = (list) => {
-        console.log("ASDASDASD");
-        console.log(list);
         let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
         let pair = null;
         for (let i = 0; i < newKeyNamePairs.length; i++) {
@@ -84,7 +84,6 @@ class App extends React.Component {
                 break;
             }
         }
-        console.log(pair);
         if(pair) {
             this.setState(prevState => ({
                 sessionData: {
@@ -97,6 +96,26 @@ class App extends React.Component {
             });
         }
         this.hideDeleteListModal();
+    }
+
+    editListItem = (key, index, newText) => {
+        // let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
+        // let pair = null;
+        // for (let i = 0; i < newKeyNamePairs.length; i++) {
+        //     pair = newKeyNamePairs[i];
+        //     if (pair.key === key) {
+        //         break;
+        //     }
+        // }
+        
+        let currentList = this.state.currentList;
+        if (currentList.key === key) {
+            currentList.items[index] = newText;
+        }
+
+        let toChange = this.db.queryGetList(key);
+        toChange.items[index] = newText;
+        this.db.mutationUpdateList(toChange);
     }
 
     renameList = (key, newName) => {
@@ -189,7 +208,8 @@ class App extends React.Component {
                     renameListCallback={this.renameList}
                 />
                 <Workspace
-                    currentList={this.state.currentList} />
+                    currentList={this.state.currentList} 
+                    editListItemCallback={this.editListItem}/>
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal

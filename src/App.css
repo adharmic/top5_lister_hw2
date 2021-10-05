@@ -193,7 +193,7 @@ body {
   background-color: var(--swatch-primary);
 }
 
-.item-number, .top5-item, .top5-item-dragged-to { 
+.item-number, .top5-item, .top5-item-dragged-to, .top5-item-edit{ 
   display:flex;
   align-items: center;
   font-size: 24pt;
@@ -213,13 +213,16 @@ input {
   font-size:20pt;
 }
 
-.top5-item, .top5-item-dragged-to {
+.top5-item, .top5-item-dragged-to, .top5-item-edit{
   text-align: left;
   width:95%;
   padding-left:5%;
 }
-.top5-item {
+.top5-item, .top5-item-edit{
   background-color: var(--swatch-complement);
+}
+.top5-item-edit {
+  background-color: linen;
 }
 .top5-item-dragged-to {
   background-color: var(--swatch-accent);
