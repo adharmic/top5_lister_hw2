@@ -9,7 +9,7 @@ import DeleteModal from './components/DeleteModal';
 import Banner from './components/Banner.js'
 import Sidebar from './components/Sidebar.js'
 import Workspace from './components/Workspace.js';
-import Statusbar from './components/Statusbar.js'
+import Statusbar from './components/Statusbar.js';
 
 class App extends React.Component {
     constructor(props) {
@@ -71,6 +71,34 @@ class App extends React.Component {
             this.db.mutationCreateList(newList);
         });
     }
+    
+
+    removeList = (list) => {
+        console.log("ASDASDASD");
+        console.log(list);
+        let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
+        let pair = null;
+        for (let i = 0; i < newKeyNamePairs.length; i++) {
+            pair = newKeyNamePairs[i];
+            if (list && pair.key === list.key) {
+                break;
+            }
+        }
+        console.log(pair);
+        if(pair) {
+            this.setState(prevState => ({
+                sessionData: {
+                    nextKey: prevState.sessionData.nextKey - 1,
+                    counter: prevState.sessionData.counter -1,
+                    keyNamePairs: prevState.sessionData.keyNamePairs.filter(oldPair => oldPair !== pair)
+                }
+            }), () => {
+                this.db.mutationUpdateSessionData(this.state.sessionData);
+            });
+        }
+        this.hideDeleteListModal();
+    }
+
     renameList = (key, newName) => {
         let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
         // NOW GO THROUGH THE ARRAY AND FIND THE ONE TO RENAME
@@ -124,6 +152,7 @@ class App extends React.Component {
             // ANY AFTER EFFECTS?
         });
     }
+
     deleteList = (keyNamePair) => {
         // SOMEHOW YOU ARE GOING TO HAVE TO FIGURE OUT
         // WHICH LIST IT IS THAT THE USER WANTS TO
@@ -132,6 +161,7 @@ class App extends React.Component {
         this.loadList(keyNamePair.key);
         this.showDeleteListModal();
     }
+
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
     showDeleteListModal() {
@@ -165,6 +195,7 @@ class App extends React.Component {
                 <DeleteModal
                     currentList={this.state.currentList}
                     hideDeleteListModalCallback={this.hideDeleteListModal}
+                    removeListCallback={this.removeList}
                 />
             </div>
         );
